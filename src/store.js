@@ -9,7 +9,17 @@ const myCustomLogger = (store) => (next) => (action) => {
     console.log(action, 'show action');
     next(action);
 }
-const store = createStore(combineReducers({ todoItems: todoItemReducer, filters: filterLinkReducer }), applyMiddleware(myCustomLogger, sagaMiddleware));
+const store = createStore(
+    combineReducers({
+        todoItems: todoItemReducer,
+        filters: filterLinkReducer
+    }),
+    applyMiddleware(
+        myCustomLogger,
+        sagaMiddleware
+    )
+);
+
 sagaMiddleware.run(rootSaga);
 
 export default store;

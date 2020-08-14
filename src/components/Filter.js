@@ -35,6 +35,4 @@ const mapStateToProps = (state) => {
         filters: state.filters
     }
 }
-
-
 export default connect(mapStateToProps, null)(Filter)

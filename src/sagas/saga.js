@@ -3,7 +3,22 @@ import { fetch } from 'cross-fetch';
 
 const API_URL = 'https://5f194821e104860016bae927.mockapi.io/todo-ha'
 
-function* handleFetchItemSaga(action) {
+// function* handleFetchItemsSaga(action) {
+//     // console.log(action);
+//     // console.log('handleFetchItemSaga Saga');
+//     try {
+//         const res = yield fetch(API_URL);
+//         // console.log(res, 'res');
+//         if (res.data) {
+//             yield put(fetchTodosSuccess(res.data));
+//         }
+//     } catch (error) {
+//         // console.log(error, 'error')
+//         yield put(fetchTodosFailure(error));
+//     }
+// }
+
+function* handleFetchItemsSaga(action) {
     yield fetch(`${API_URL}`, {
         method: 'GET',
         mode: 'cors',
@@ -14,7 +29,7 @@ function* handleFetchItemSaga(action) {
     })
         .then(response => response.json())
         .then(data => {
-            action = { ...action, type: `${action.type}` };
+            action = { ...action, type: `${action.type}_ASYNC` };
         });
     yield put(action);
 }
@@ -30,7 +45,7 @@ function* handleAddItemSaga(action) {
     })
         .then(response => response.json())
         .then(data => {
-            action = { ...action, type: `${action.type}` };
+            action = { ...action, type: `${action.type}_ASYNC` };
         });
     yield put(action);
 }
@@ -45,7 +60,7 @@ function* handleRemoveItemSaga(action) {
     })
         .then(response => response.json())
         .then(data => {
-            action = { ...action, type: `${action.type}` };
+            action = { ...action, type: `${action.type}_ASYNC` };
         });
     yield put(action);
 }
@@ -61,13 +76,12 @@ function* handleToggleItemSaga(action) {
     })
         .then(response => response.json())
         .then(data => {
-            action = { ...action, type: `${action.type}` };
+            action = { ...action, type: `${action.type}_ASYNC` };
         });
     yield put(action);
 }
-
-function* watchFetchItem() {
-    yield takeLatest('FETCH_ITEM', handleFetchItemSaga);
+function* watchFetchItems() {
+    yield takeLatest('FETCH_ITEMS', handleFetchItemsSaga);
 }
 
 function* watchAddItem() {
@@ -84,7 +98,7 @@ function* watchToggleItem() {
 
 export default function* rootSaga() {
     yield all([
-        watchFetchItem(),
+        watchFetchItems(),
         watchAddItem(),
         watchRemoveItem(),
         watchToggleItem()

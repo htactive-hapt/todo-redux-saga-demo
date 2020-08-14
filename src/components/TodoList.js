@@ -1,35 +1,40 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { toggleItem, removeItem, fetchTodos } from '../actions'
+import { removeItem, fetchTodos, changeFilter } from '../actions'
 import { Col, Row, Button, Input } from 'antd'
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons'
 
 const TodoList = (props) => {
     const { filters, todoItems, dispatch } = props
     // console.log(filters, 'filters')
     // console.log(todoItems, 'todoItems')
     useEffect(() => {
-        fetchTodos();
+        fetchTodos()
     }, [])
 
     const handleToggleItem = (itemId) => {
-        dispatch(toggleItem(itemId))
+        dispatch(changeFilter(itemId))
     }
 
     const handleDeleteItem = (itemId) => {
         dispatch(removeItem(itemId))
     }
 
+
     const getFilteredTodoList = () => {
         const activeFilter = filters.find(filter => filter.active === true)
+        console.log(activeFilter, 'activeFilter')
         switch (activeFilter.filterName) {
+            case 'Show All':
+                return todoItems
+
             case 'Completed':
                 return todoItems.filter((item) => {
-                    return item.isCompleted === true;
-                });
+                    return item.isCompleted === true
+                })
             case 'Todo':
                 return todoItems.filter((item) => {
-                    return item.isCompleted === false;
+                    return item.isCompleted === false
                 })
             default:
                 return todoItems
@@ -41,26 +46,23 @@ const TodoList = (props) => {
     return (
         <div className='todolist'>
             {
-                filteredTodoList.map((item) => {
-                    return (
-                        <Row key={item.id} className='task'>
-                            <Col span={1}>
-                                <Input type='checkbox' defaultChecked={item.isCompleted} onClick={() => handleToggleItem(item.id)}></Input>
-                            </Col>
-                            <Col span={23} >
-                                <Col onClick={() => handleToggleItem(item.id)}>{item.taskName}</Col>
-                            </Col>
-                            <Col className='button' >
-                                <Button onClick={() => handleDeleteItem(item.id)}><CloseOutlined /></Button>
-                            </Col>
-                        </Row>
-                    )
-                })
+                filteredTodoList.map((item) => (
+                    <Row key={item.id} className='task'>
+                        <Col span={1}>
+                            <Input type='checkbox' defaultChecked={item.isCompleted} onClick={() => handleToggleItem(item.id)}></Input>
+                        </Col>
+                        <Col span={23} >
+                            <Col>{item.createdAt} {item.taskName}</Col>
+                        </Col>
+                        <Col className='button' >
+                            <Button onClick={() => handleDeleteItem(item.id)}><CloseOutlined /></Button>
+                        </Col>
+                    </Row>
+                ))
             }
         </div>
     )
 }
-
 const mapStateToProps = (state) => {
     return {
         todoItems: state.todoItems,
@@ -69,4 +71,4 @@ const mapStateToProps = (state) => {
 }
 
 
-export default connect(mapStateToProps, null)(TodoList)   
+export default connect(mapStateToProps, null)(TodoList)
